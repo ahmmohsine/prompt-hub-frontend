@@ -1,0 +1,34 @@
+<header class="navbar-shadow p-3 mb-4">
+  <div class="container flex justify-content-between align-items-center">
+    <a routerLink="/" class="navbar-logo flex gap-2 align-items-center">
+      <img ngSrc="/logo-prompt-hub.png" alt="Logo" height="36" width="36" />
+      PromptHub
+    </a>
+    <div class="flex gap-2">
+      @if (authService.currentUser(); as currentUser) {
+        <span class="text-sm text-color-secondary">{{ currentUser.username|titlecase}}</span>
+        <p-button
+      (onClick)="logout()"
+          severity="secondary"
+          label="Déconnexion"
+          size="small"
+        ></p-button>
+      } @else {
+        <p-button severity="secondary" routerLink="/auth" label="Connexion" size="small" />
+      }
+      <p-button
+        size="small"
+        severity="secondary"
+        [icon]="isDark() ? 'pi pi-sun' : 'pi pi-moon'"
+        (click)="toggleDarkMode()"
+      ></p-button>
+      <p-button
+        size="small"
+        [routerLink]="'prompts/create'"
+        icon="pi pi-plus"
+        label="Ajouter"
+      ></p-button>
+      <!-- <p-button label="Sign Up" severity="primary"></p-button> -->
+    </div>
+  </div>
+</header>

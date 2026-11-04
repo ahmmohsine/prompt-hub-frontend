@@ -1,0 +1,3 @@
+@for (prompt of prompts$ | async; track $index) {
+  <app-prompt-card [prompt]="prompt" />
+}

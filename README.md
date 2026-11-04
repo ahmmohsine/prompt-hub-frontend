@@ -1,37 +1,95 @@
 # Prompt Hub — Frontend
 
-[Vidéo de la formation](https://youtu.be/3llJm3LO1e4)
+Application Angular pour **Prompt Hub** : partager et découvrir des prompts (liste, création, édition, suppression, catégories, votes).
 
-Application Angular pour **Prompt Hub** : partage et découverte de prompts (liste, création, édition, votes, catégories).
+Projet réalisé pendant ma formation Angular, en suivant la [vidéo de la formation](https://youtu.be/3llJm3LO1e4).
 
-Projet pensé pour **apprendre Angular moderne** (standalone, signals, zoneless, formulaires, librairie de composants, routing, guards, authentification, etc.) avec un backend API REST proche d’un environnement entreprise.
+## Technologies
 
+- **Angular 21** : composants standalone, signals, nouveau control flow (`@if`, `@for`)
+- **PrimeNG 21** : librairie de composants, avec le thème Aura personnalisé en indigo
+- **PrimeFlex** : classes utilitaires CSS
+- **PrimeIcons** : icônes
+- **Reactive Forms** : formulaires avec validation
+- **RxJS** : requêtes HTTP vers l'API
 
-## Branches de la formation
+## Fonctionnalités
 
-Ce dépôt contient des branches de base pour chaque partie de la formation Angular. La branche `main` (par défaut lors du clone) correspond à `base-1-and-2` — point de départ des parties 1 et 2. La colonne **Timestamp** indique à quel moment de la vidéo YouTube chaque base correspond.
+- Affichage de la liste des prompts
+- Création et modification d'un prompt (formulaire avec validation)
+- Suppression d'un prompt
+- Copie du contenu d'un prompt dans le presse-papiers
+- Choix d'une catégorie
+- Authentification : connexion, création de compte, déconnexion
+- Session conservée après un rechargement de la page (appel à `/auth/me` au démarrage)
 
-| Branche | Partie | Timestamp | Description |
-|---------|--------|-----------|-------------|
-| `main` | 1 & 2 | [1:43](https://youtu.be/3llJm3LO1e4?t=103) & [42:32](https://youtu.be/3llJm3LO1e4?t=2552) | Point de départ (identique à `base-1-and-2`) |
-| `base-1-and-2` | 1 & 2 | [1:43](https://youtu.be/3llJm3LO1e4?t=103) & [42:32](https://youtu.be/3llJm3LO1e4?t=2552) | Concepts et affichage de données |
-| `base-3` | 3 | [01:05:20](https://youtu.be/3llJm3LO1e4?t=3920) | Librairie et UX/UI |
-| `base-4` | 4 | [01:45:40](https://youtu.be/3llJm3LO1e4?t=6340) | Requêtes au back-end |
-| `base-5` | 5 | [02:03:49](https://youtu.be/3llJm3LO1e4?t=7429) | Formulaire et route |
-| `base-6` | 6 | [02:47:08](https://youtu.be/3llJm3LO1e4?t=10028) | Authentification |
-| `base-7` | 7 | [03:26:52](https://youtu.be/3llJm3LO1e4?t=12412) | Finition |
-| `final` | — | — | État final du projet (référence / correction) |
+## Structure du projet
 
-**Utilisation :** lors du git clone, vous êtes sur `main` (= `base-1-and-2`). Pour une autre partie : `git checkout base-N`. La branche `final` contient le projet complet une fois toutes les parties terminées.
+```
+src/app/
+├── auth/
+│   ├── auth-form/      # Formulaire de connexion / inscription
+│   ├── interceptors/   # Intercepteur HTTP (envoi du cookie avec withCredentials)
+│   ├── models/         # Modèle CurrentUser
+│   └── services/       # AuthService (login, register, me)
+├── navbar/             # Barre de navigation
+└── prompts/
+    ├── components/
+    │   ├── prompt-list/   # Liste des prompts
+    │   ├── prompt-card/   # Carte d'un prompt
+    │   └── prompt-form/   # Formulaire de création / édition
+    ├── models/         # Modèles Prompt et Category
+    └── services/       # PromptService, CategoryService
+```
 
+## Routes
+
+| URL | Page |
+|-----|------|
+| `/prompts` | Liste des prompts |
+| `/prompts/create` | Créer un prompt |
+| `/prompts/:promptId/edit` | Modifier un prompt |
+| `/auth` | Connexion / inscription |
 
 ## Lancer le projet
+
+### 1. Le backend
+
+Le frontend a besoin de l'API [prompt-hub-backend](https://github.com/GaetanRouzies/prompt-hub-backend) (NestJS, port 3000).
+
+Dans le dossier du backend :
+
+```bash
+npm install
+npm run start:auth:dev
+```
+
+> `start:auth:dev` lance l'API **avec authentification** et la redémarre automatiquement quand un fichier change.
+> Pour la lancer sans authentification : `npm run start:dev`.
+
+### 2. Le frontend
+
+Dans un **autre terminal**, dans le dossier du frontend :
 
 ```bash
 npm install
 npm start
 ```
 
-Ouvre `http://localhost:4200/`. Le backend (NestJS, port 3000) doit tourner pour que l’app fonctionne.
+Puis ouvre [http://localhost:4200](http://localhost:4200).
 
-**Backend :** [prompt-hub-backend](https://github.com/GaetanRouzies/prompt-hub-backend)
+## Configuration
+
+L'adresse de l'API se trouve dans `src/environments/environment.development.ts` :
+
+```ts
+apiUrl: 'http://localhost:3000'
+```
+
+## Autres commandes
+
+| Commande | Rôle |
+|----------|------|
+| `npm run build` | Construit l'application pour la production |
+| `npm test` | Lance les tests |
+| `npm run format` | Met en forme le code avec Prettier |
