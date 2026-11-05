@@ -1,6 +1,6 @@
 import { PromptService } from './../../services/prompt-service'
 import { Prompt } from './../../models/prompt.model'
-import { Component, effect, inject, input } from '@angular/core'
+import { Component, effect, inject, input, signal } from '@angular/core'
 import { Card } from 'primeng/card'
 import { Select } from 'primeng/select'
 import { CategoryService } from '../../services/category-service'
@@ -11,17 +11,22 @@ import { Category } from '../../models/category.model'
 import { toSignal } from '@angular/core/rxjs-interop'
 import { Router, RouterLink } from '@angular/router'
 import { InputText } from 'primeng/inputtext'
+import { MessageService } from 'primeng/api'
+import { Textarea } from 'primeng/textarea'
+import { finalize } from 'rxjs'
 @Component({
   selector: 'app-prompt-form',
-  imports: [InputText, Card, Select, ReactiveFormsModule, Button, RouterLink],
+  imports: [InputText, Card, Select, ReactiveFormsModule, Button, RouterLink, Textarea],
   templateUrl: './prompt-form.html',
   styleUrl: './prompt-form.scss',
 })
 export class PromptForm {
   router = inject(Router)
+  messageService = inject(MessageService)
   categoryService = inject(CategoryService)
   categories = toSignal<Category[]>(this.categoryService.getCategories())
-  //categories$ = this.categoryService.getCategories();
+  submitting = signal(false)
+  deleting = signal(false)
   promptService = inject(PromptService)
   promptId = input<number>()
   constructor() {
@@ -55,16 +60,46 @@ export class PromptForm {
     const prompt = this.form.getRawValue()
     const id = this.promptId()
     if (id) {
-      console.log('derniere etape')
+      this.submitting.set(true)
       this.promptService
         .update(id, { title: prompt.title, content: prompt.content, categoryId: prompt.categoryId })
-        .subscribe(() => this.router.navigate(['/']))
+        .pipe(finalize(() => this.submitting.set(false)))
+        .subscribe(() => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Modifié',
+            detail: 'Prompt modifié avec succèss !',
+          })
+          this.router.navigate(['/'])
+        })
     } else {
-      this.promptService.create(prompt).subscribe(() => this.router.navigate(['/']))
+      this.submitting.set(true)
+      this.promptService
+        .create(prompt)
+        .pipe(finalize(() => this.submitting.set(false)))
+        .subscribe(() => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Créé',
+            detail: 'Prompt créé avec succèss !',
+          })
+          this.router.navigate(['/'])
+        })
     }
   }
   delete() {
-    console.log('y a problem')
-    this.promptService.delete(this.promptId()!).subscribe(() => this.router.navigate(['/']))
+    this.deleting.set(true)
+    this.promptService
+      .delete(this.promptId()!)
+      .pipe(finalize(() => this.deleting.set(false)))
+      .subscribe(() => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Supprimé',
+          detail: 'Prompt supprimé avec succèss !',
+        })
+        this.deleting.set(false)
+        this.router.navigate(['/'])
+      })
   }
 }

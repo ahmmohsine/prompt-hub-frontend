@@ -7,9 +7,6 @@ import { environment } from '../../../environments/environment.development'
   providedIn: 'root',
 })
 export class PromptService {
-  // update(id: number, prompt: Prompt) {
-  //   return this.httpClient.put<Prompt>(this.baseUrl + '/' + id, prompt)
-  // }
   update(id: number, prompt: { title: string; content: string; categoryId: number }) {
     return this.httpClient.put<Prompt>(`${this.baseUrl}/${id}`, prompt)
   }
@@ -29,5 +26,11 @@ export class PromptService {
   }
   delete(id: number) {
     return this.httpClient.delete<Prompt>(`${this.baseUrl}/${id}`)
+  }
+  upvote(id: number) {
+    return this.httpClient.post<Prompt>(`${this.baseUrl}/${id}/upvote`, null)
+  }
+  downvote(id: number) {
+    return this.httpClient.post<Prompt>(`${this.baseUrl}/${id}/downvote`, null)
   }
 }

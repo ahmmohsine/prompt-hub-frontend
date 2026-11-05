@@ -6,9 +6,9 @@
     </a>
     <div class="flex gap-2">
       @if (authService.currentUser(); as currentUser) {
-        <span class="text-sm text-color-secondary">{{ currentUser.username|titlecase}}</span>
+        <span class="text-sm text-color-secondary">{{ currentUser.username | titlecase }}</span>
         <p-button
-      (onClick)="logout()"
+          (onClick)="logout()"
           severity="secondary"
           label="Déconnexion"
           size="small"
@@ -28,7 +28,6 @@
         icon="pi pi-plus"
         label="Ajouter"
       ></p-button>
-      <!-- <p-button label="Sign Up" severity="primary"></p-button> -->
     </div>
   </div>
 </header>

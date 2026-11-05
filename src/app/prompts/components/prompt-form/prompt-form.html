@@ -7,15 +7,7 @@
     </div>
     <div class="field">
       <label for="content">Contenu</label>
-      <textarea
-        formControlName="content"
-        pTextArea
-        id="content"
-        type="text"
-        pInputText
-        class="w-full"
-        rows="8"
-      ></textarea>
+      <textarea formControlName="content" id="content" pTextarea class="w-full" rows="8"></textarea>
       <small class="invalid-feedback">Le contenu est requis</small>
     </div>
     <div class="field">
@@ -32,15 +24,22 @@
       <small class="invalid-feedback">La catégorie est requise</small>
     </div>
     <div class="flex justify-content-end gap-2">
-      <p-button
-        class="mr-auto"
-        label="Supprimer"
-        severity="danger"
-        [outlined]="true"
-        (onClick)="delete()"
-      ></p-button>
+      @if (promptId()) {
+        <p-button
+          [loading]="deleting()"
+          class="mr-auto"
+          label="Supprimer"
+          severity="danger"
+          [outlined]="true"
+          (onClick)="delete()"
+        ></p-button>
+      }
       <p-button routerLink="/" label="Annuler" severity="secondary"></p-button>
-      <p-button [label]="promptId() ? 'Modifier' : 'Créer'" type="submit"></p-button>
+      <p-button
+        [loading]="submitting()"
+        [label]="promptId() ? 'Modifier' : 'Créer'"
+        type="submit"
+      ></p-button>
     </div>
   </form>
 </p-card>

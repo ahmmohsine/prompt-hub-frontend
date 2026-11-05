@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api'
 import { Component, inject, signal } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Password } from 'primeng/password'
@@ -14,6 +15,7 @@ import { Router } from '@angular/router'
 })
 export class AuthForm {
   authService = inject(AuthService)
+  messageService = inject(MessageService)
   router = inject(Router)
   isLoging = signal<boolean>(true)
   form = new FormGroup({
@@ -23,14 +25,13 @@ export class AuthForm {
     }),
     password: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(6)],
+      validators: [Validators.required, Validators.minLength(4)],
     }),
   })
   toggleMode() {
-    this.isLoging.update((value) => (value = !value))
+    this.isLoging.update((value) => !value)
   }
-  toString(): string {
-    console.log(this.authService.currentUser())
+  title(): string {
     return this.isLoging() ? 'Connexion' : 'Créer un compte'
   }
   submit() {
@@ -44,13 +45,28 @@ export class AuthForm {
     }
   }
   login(username: string, password: string) {
-    this.authService.login(username, password).subscribe(() => {
-      this.router.navigate(['/'])
+    this.authService.login(username, password).subscribe({
+      next: () => {
+        this.router.navigate(['/'])
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Connexion impossible, réessayez!',
+        })
+      },
     })
   }
   register(username: string, password: string) {
-    this.authService.register(username, password).subscribe(() => {
-      this.router.navigate(['/'])
+    this.authService.register(username, password).subscribe({
+      next: () => this.router.navigate(['/']),
+      error: () =>
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Enregistrement impossible, réessayez!',
+        }),
     })
   }
 }

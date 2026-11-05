@@ -11,26 +11,25 @@ export class AuthService {
   httpClient = inject(HttpClient)
   baseUrl = environment.apiUrl + '/auth'
   currentUser = signal<CurrentUser | undefined>(undefined)
-
-  login(username: string, password: string) {
-    return this.httpClient
-      .post<CurrentUser>(`${this.baseUrl}/login`, { username, password })
-      .pipe(tap((currentUser) => this.currentUser.set(currentUser)))
-  }
-  me() {
+  loadCurrentUser() {
     return this.httpClient.get<CurrentUser>(`${this.baseUrl}/me`).pipe(
       tap((currentUser) => this.currentUser.set(currentUser)),
       catchError(() => of(undefined)),
     )
+  }
+  login(username: string, password: string) {
+    return this.httpClient
+      .post<CurrentUser>(`${this.baseUrl}/login`, { username, password })
+      .pipe(tap((currentUser) => this.currentUser.set(currentUser)))
   }
   register(username: string, password: string) {
     return this.httpClient
       .post<CurrentUser>(`${this.baseUrl}/register`, { username, password })
       .pipe(tap((currentUser) => this.currentUser.set(currentUser)))
   }
-   logout() {
+  logout() {
     return this.httpClient
-      .post<CurrentUser>(`${this.baseUrl}/logout`, {  })
-      .pipe(tap((currentUser) => this.currentUser.set(undefined)))
+      .post(`${this.baseUrl}/logout`, {})
+      .pipe(tap(() => this.currentUser.set(undefined)))
   }
 }

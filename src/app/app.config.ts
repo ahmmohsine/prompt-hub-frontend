@@ -13,6 +13,7 @@ import { definePreset } from '@primeuix/themes'
 import { provideHttpClient, withInterceptors } from '@angular/common/http'
 import { authInterceptor } from './auth/interceptors/auth-interceptor'
 import { AuthService } from './auth/services/auth-service'
+import { MessageService } from 'primeng/api'
 const promptPrest = definePreset(Aura, {
   semantic: {
     primary: {
@@ -29,13 +30,35 @@ const promptPrest = definePreset(Aura, {
       950: '{indigo.950}',
     },
   },
+  components: {
+    progressspinner: {
+      colorScheme: {
+        light: {
+          root: {
+            colorOne: '{primary.500}',
+            colorTwo: '{primary.500}',
+            colorThree: '{primary.500}',
+            colorFour: '{primary.500}',
+          },
+        },
+        dark: {
+          root: {
+            colorOne: '{primary.500}',
+            colorTwo: '{primary.500}',
+            colorThree: '{primary.500}',
+            colorFour: '{primary.500}',
+          },
+        },
+      },
+    },
+  },
 })
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideRouter(routes, withComponentInputBinding()),
-    provideAppInitializer(() => inject(AuthService).me()),
+    provideAppInitializer(() => inject(AuthService).loadCurrentUser()),
     providePrimeNG({
       theme: {
         preset: promptPrest,
@@ -45,5 +68,6 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
+    MessageService,
   ],
 }

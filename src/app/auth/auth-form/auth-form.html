@@ -1,15 +1,8 @@
-<p-card [header]="toString()">
+<p-card [header]="title()">
   <form [formGroup]="form" (ngSubmit)="submit()">
     <div class="field">
       <label for="username">Nom d'utilisateur</label>
-      <input
-        id="username"
-        pInputText
-        inputId="username"
-        class="w-full"
-        type="text"
-        formControlName="username"
-      />
+      <input id="username" pInputText class="w-full" type="text" formControlName="username" />
       <small class="invalid-feedback">Le nom d'utilisateur est requis!</small>
     </div>
     <div class="field">
@@ -26,9 +19,9 @@
       <p-button
         severity="secondary"
         (onClick)="toggleMode()"
-        [label]="isLoging() ? 'Crée un compte' : 'Se connecter'"
+        [label]="isLoging() ? 'Créer un compte' : 'Se connecter'"
       ></p-button>
-      <p-button type="submit" [label]="isLoging() ? 'Connexion' : 'Crée le compte'"></p-button>
+      <p-button type="submit" [label]="isLoging() ? 'Connexion' : 'Créer le compte'"></p-button>
     </div>
   </form>
 </p-card>

@@ -5,44 +5,41 @@
       <div class="text-sm text-color-secondary">@{{ prompt().author.username }}</div>
     </div>
     <div class="flex gap-2">
-     
       <p-button
         icon="pi pi-copy"
         size="small"
         (onClick)="copyToClipboard()"
         [text]="true"
       ></p-button>
-       @if(canEdit()){
+      @if (canEdit()) {
         <p-button
-        [routerLink]="['/prompts', prompt().id, 'edit']"
-        icon="pi pi-pencil"
-        size="small"
-        (onClick)="
-          promptService.update(prompt().id, {
-            title: prompt().title,
-            content: prompt().content,
-            categoryId: prompt().category.id,
-          })
-        "
-        [text]="true"
-      ></p-button>
+          [routerLink]="['/prompts', prompt().id, 'edit']"
+          icon="pi pi-pencil"
+          size="small"
+          [text]="true"
+        ></p-button>
+
+        <p-button icon="pi pi-trash" size="small" (onClick)="delete()" [text]="true"></p-button>
       }
-      
-      <p-button
-        icon="pi pi-trash"
-        size="small"
-        (onClick)="promptService.delete(prompt().id)"
-        [text]="true"
-      ></p-button>
     </div>
   </div>
   <textarea pTextarea class="w-full mb-2" rows="8" readonly>{{ prompt().content }}</textarea>
   <div class="flex justify-content-between">
     <p-tag severity="secondary" [value]="prompt().category.name"></p-tag>
     <div class="flex gap-2 align-items-center">
-      <p-button severity="secondary" icon="pi pi-thumbs-up"></p-button>
-      <span>{{ prompt().score }}</span>
-      <p-button severity="secondary" icon="pi pi-thumbs-down"></p-button>
+      <p-button
+        [loading]="voting()"
+        [severity]="userVote() === 'up' ? 'primary' : 'secondary'"
+        icon="pi pi-thumbs-up"
+        (onClick)="upvote()"
+      ></p-button>
+      <span>{{ score() }}</span>
+      <p-button
+        [loading]="voting()"
+        [severity]="userVote() === 'down' ? 'primary' : 'secondary'"
+        icon="pi pi-thumbs-down"
+        (onClick)="downvote()"
+      ></p-button>
     </div>
   </div>
 </p-card>
